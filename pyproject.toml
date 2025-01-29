@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "py-engineering-hw7"
+version = "0.1.0"
+description = ""
+authors = ["Abboth <Alexmikhailov90@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+sqlalchemy = "^2.0.37"
+alembic = "^1.14.1"
+faker = "^35.0.0"
+psycopg2 = "^2.9.10"
+argparse = "^1.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
