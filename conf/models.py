@@ -2,8 +2,6 @@ from sqlalchemy import Integer, String, ForeignKey, Date, Column
 from sqlalchemy.orm import declarative_base, Mapped, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
-Base = declarative_base()
-
 
 class Teachers(Base):
     __tablename__ = "teacher"
@@ -16,10 +14,6 @@ class Teachers(Base):
     def __repr__(self):
         return f"\nTeacher name - {self.name}, id - {self.id} teaching subjects {self.subject}"
 
-    @hybrid_property
-    def average_grade(self):
-        pass
-
 
 class Students(Base):
     __tablename__ = "student"
@@ -27,9 +21,10 @@ class Students(Base):
     name: Mapped[str] = Column(String(100), nullable=False)
     group_id: Mapped[int] = Column(Integer, ForeignKey("group.id"), nullable=False)
 
-    subject = relationship("Subjects", secondary="student_subject", back_populates="student")
-    grades = relationship("GradesBook", back_populates="student")
-    group = relationship("Groups", back_populates="students")
+    subject = relationship("Subjects", secondary="student_subject",
+                           back_populates="student", passive_deletes=True)
+    grades = relationship("GradesBook", back_populates="student", passive_deletes=True)
+    group = relationship("Groups", back_populates="students", passive_deletes=True)
 
     def __repr__(self):
         return f"\nStudent name - {self.name}, id - {self.id} member of group: {self.group_id}"
@@ -40,9 +35,11 @@ class Subjects(Base):
     id: Mapped[int] = Column(Integer, primary_key=True)
     subject: Mapped[str] = Column(String(60), nullable=False)
 
-    teacher = relationship("Teachers", secondary="teacher_subject", back_populates="subject")
-    student = relationship("Students", secondary="student_subject", back_populates="subject")
-    grades = relationship("GradesBook", back_populates="subject")
+    teacher = relationship("Teachers", secondary="teacher_subject",
+                           back_populates="subject", passive_deletes=True)
+    student = relationship("Students", secondary="student_subject",
+                           back_populates="subject", passive_deletes=True)
+    grades = relationship("GradesBook", back_populates="subject", passive_deletes=True)
 
     def __repr__(self):
         return f"\n{self.subject} id - {self.id}"
@@ -53,7 +50,6 @@ class TeacherSubjects(Base):
     id: Mapped[int] = Column(Integer, primary_key=True)
     teacher_id: Mapped[int] = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
     subject_id: Mapped[int] = Column(Integer, ForeignKey("subject.id", ondelete="CASCADE"))
-
 
 
 class StudentSubjects(Base):
@@ -72,9 +68,9 @@ class GradesBook(Base):
     grade: Mapped[int] = Column(Integer)
     teacher_id: Mapped[int] = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
 
-    student = relationship("Students", back_populates="grades")
-    subject = relationship("Subjects", back_populates="grades")
-    teacher = relationship("Teachers", back_populates="grades")
+    student = relationship("Students", back_populates="grades", passive_deletes=True)
+    subject = relationship("Subjects", back_populates="grades", passive_deletes=True)
+    teacher = relationship("Teachers", back_populates="grades", passive_deletes=True)
 
 
 class Groups(Base):
@@ -82,7 +78,7 @@ class Groups(Base):
     id: Mapped[int] = Column(Integer, primary_key=True)
     group_name: Mapped[str] = Column(String)
 
-    students = relationship("Students", back_populates="group")
+    students = relationship("Students", back_populates="group", passive_deletes=True)
 
     def __repr__(self):
         return f"\nGroups name {self.group_name} id {self.id}"
