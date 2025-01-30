@@ -60,8 +60,7 @@ with session:
     def teach_subj_associations():
         try:
             teachers_count = session.query(Teachers).count()
-            count_of_subjects = randint(1, 3)
-            for i in range(count_of_subjects):
+            for i in range(len(subjects)):
                 teacher_subject = TeacherSubjects(
                     teacher_id=randint(1, teachers_count),
                     subject_id=i + 1)
