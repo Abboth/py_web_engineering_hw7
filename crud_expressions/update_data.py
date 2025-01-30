@@ -45,7 +45,7 @@ def add_data(obj, **kwargs):
             for i in range(count_of_subjects):
                 teacher_subject = TeacherSubjects(
                     teacher_id=new_teacher.id,
-                    subject_id=i + 1)
+                    subject_id=randint(1, count_of_subjects))
                 session.add(teacher_subject)
 
             session.commit()
