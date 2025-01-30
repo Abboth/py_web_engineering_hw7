@@ -10,7 +10,7 @@ def add_data(obj, **kwargs):
             group = session.query(Groups).get(group_id)
             if not group:
                 raise ValueError(f"Group with id={group_id} not found.")
-            kwargs["group"] = group
+            kwargs["group_id"] = group
 
         new_record = obj(**kwargs)
         session.add(new_record)
