@@ -105,11 +105,12 @@ with session:
                 student_grades_count = []
                 target_grades_count = randint(15, 20)
                 while len(student_grades_count) < target_grades_count:
+                    teacher_id = randint(1, teachers_count)
                     get_joint_subjects = session.query(Subjects.id).select_from(TeacherSubjects) \
                         .join(Subjects, TeacherSubjects.subject_id == Subjects.id) \
                         .join(StudentSubjects, Subjects.id == StudentSubjects.subject_id) \
                         .filter(StudentSubjects.student_id == student + 1,
-                                TeacherSubjects.teacher_id == randint(1, teachers_count)) \
+                                TeacherSubjects.teacher_id == teacher_id) \
                         .group_by(Subjects.id).all()
 
                     if not get_joint_subjects:
@@ -121,7 +122,7 @@ with session:
                         subject_id=choice(get_joint_subjects)[0],
                         grade=grade,
                         date=date_of_grade,
-                        teacher_id=randint(1, teachers_count)
+                        teacher_id=teacher_id
                     )
                     student_grades_count.append(grade)
                     session.add(grade_book)
